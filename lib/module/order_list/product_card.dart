@@ -1,18 +1,20 @@
+import 'package:ex2/core/models/cart_item.dart' show CartItem;
 import 'package:ex2/core/models/products.dart' show Product;
 import 'package:ex2/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class ProductCard extends StatefulWidget {
   @override
-  final Product product;
-  ProductCard({required this.product});
+  final CartItem cartItem;
+  ProductCard({required this.cartItem});
 
   State<ProductCard> createState() => _ProductCardState();
 }
 
 class _ProductCardState extends State<ProductCard> {
   Widget build(BuildContext context) {
-    final itemTotal = widget.product.price * (widget.product.quantity ?? 0);
+    final itemTotal =
+        widget.cartItem.product.price * (widget.cartItem.quantity ?? 0);
     final theme = Theme.of(context);
     return Container(
       padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
@@ -25,20 +27,23 @@ class _ProductCardState extends State<ProductCard> {
             SizedBox(
               width: 80,
               height: 80,
-              child: Image.asset(widget.product.imageUrl, fit: BoxFit.contain),
+              child: Image.asset(
+                widget.cartItem.product.imageUrl,
+                fit: BoxFit.contain,
+              ),
             ),
             SizedBox(width: 20),
             Column(
               children: [
                 Text(
-                  widget.product.name,
+                  widget.cartItem.product.name,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(height: 10),
                 Text(
-                  "${widget.product.quantity ?? 0} packs",
+                  "${widget.cartItem.quantity ?? 0} packs",
                   style: theme.textTheme.bodySmall,
                 ),
               ],

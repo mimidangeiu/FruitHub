@@ -1,4 +1,6 @@
+import 'package:ex2/core/models/cart_item.dart';
 import 'package:ex2/core/models/products.dart';
+import 'package:ex2/module/add_to_basket/add_to_basket.dart';
 import 'package:ex2/theme/app_colors.dart' show AppColors;
 import 'package:flutter/material.dart';
 
@@ -16,7 +18,6 @@ class ProductCard extends StatefulWidget {
 class _ProductCardState extends State<ProductCard> {
   @override
   Widget build(BuildContext context) {
-    final itemTotal = widget.product.price * (widget.product.quantity ?? 0);
     return Container(
       width: 150,
       child: Column(
@@ -40,10 +41,19 @@ class _ProductCardState extends State<ProductCard> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("\$ $itemTotal"),
+              Text("\$ ${widget.product.price}"),
               IconButton(
                 color: AppColors.backgroundOrange,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddToBasket(
+                        cartItem: CartItem(product: widget.product),
+                      ),
+                    ),
+                  );
+                },
                 icon: Image.asset('assets/icons/plus_icon.png'),
               ),
             ],

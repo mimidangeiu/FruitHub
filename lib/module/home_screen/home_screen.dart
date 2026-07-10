@@ -48,7 +48,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, '/order');
+                  },
                   child: Column(
                     children: [
                       Image.asset(

@@ -1,3 +1,4 @@
+import 'package:ex2/core/models/products.dart';
 import 'package:ex2/module/add_to_basket/add_to_basket.dart';
 import 'package:ex2/module/authentication/authentication.dart';
 import 'package:ex2/module/complete_detail/complete_detail.dart';
@@ -39,14 +40,13 @@ class _MainAppState extends State<MainApp> {
           routes: {
             '/splash': (context) => SplashScreen(),
             '/home': (context) => HomeScreen(),
-            '/cart': (context) => AddToBasket(),
             '/auth': (context) => Authentication(),
             '/complete': (context) => CompleteDetail(),
             '/card': (context) => InputCardDetails(),
             '/success': (context) => OrderComplete(),
-            '/': (context) => OrderList(),
+            '/order': (context) => OrderList(),
             '/tracking': (context) => TrackOrder(),
-            '/welcome': (context) => WelcomeScreen(),
+            '/': (context) => WelcomeScreen(),
           },
         );
       },

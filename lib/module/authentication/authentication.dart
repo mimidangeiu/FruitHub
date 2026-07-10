@@ -56,6 +56,6 @@ class _AuthenticationState extends State<Authentication> {
   }
 
   void onClicked() {
-    Navigator.pushNamed(context, '/');
+    Navigator.pushNamed(context, '/home');
   }
 }
