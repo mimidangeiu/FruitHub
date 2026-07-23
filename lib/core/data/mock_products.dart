@@ -48,7 +48,7 @@ final List<Product> products = [
     name: 'Melon fruit salad',
     price: 10000,
     imageUrl: 'assets/images/melon_fruit_image.png',
-    categories: [Category.Hottest, Category.Basket],
+    categories: [Category.Popular, Category.Basket],
     capacity: 10,
     ingredients:
         'Watermelon, Cantaloupe, Honeydew melon, Fresh mint, Lime juice.',

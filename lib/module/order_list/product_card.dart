@@ -2,6 +2,8 @@ import 'package:ex2/core/models/cart_item.dart' show CartItem;
 import 'package:ex2/core/models/products.dart' show Product;
 import 'package:ex2/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:ex2/module/cart/cubit/cart_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductCard extends StatefulWidget {
   @override
@@ -49,11 +51,38 @@ class _ProductCardState extends State<ProductCard> {
               ],
             ),
             Spacer(),
-            Text(
-              "\$$itemTotal",
-              style: theme.textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+            Column(
+              children: [
+                Text(
+                  "\$$itemTotal",
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        context.read<CartCubit>().decrease(widget.cartItem);
+                      },
+                      icon: const Icon(Icons.remove_circle),
+                    ),
+                    Text(widget.cartItem.quantity.toString()),
+                    IconButton(
+                      onPressed: () {
+                        context.read<CartCubit>().increase(widget.cartItem);
+                      },
+                      icon: const Icon(Icons.add_circle),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        context.read<CartCubit>().remove(widget.cartItem);
+                      },
+                      icon: const Icon(Icons.delete_forever_outlined),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),

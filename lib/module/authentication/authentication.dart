@@ -1,6 +1,8 @@
 import 'package:ex2/common/widget/primary_textfield.dart';
+import 'package:ex2/module/user/cubit/usercubit.dart';
 import 'package:ex2/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../common/widget/app_stack.dart';
 import '../../common/widget/primary_button.dart';
 
@@ -9,6 +11,8 @@ class Authentication extends StatefulWidget {
 }
 
 class _AuthenticationState extends State<Authentication> {
+  final nameController = TextEditingController();
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
@@ -40,7 +44,7 @@ class _AuthenticationState extends State<Authentication> {
               ),
             ),
             SizedBox(height: 20),
-            PrimaryTextfield(hint: 'Tony'),
+            PrimaryTextfield(hint: 'Tony', controller: nameController),
             SizedBox(height: 40),
             PrimaryButton(
               onPressed: onClicked,
@@ -56,6 +60,7 @@ class _AuthenticationState extends State<Authentication> {
   }
 
   void onClicked() {
+    context.read<UserCubit>().updatedName(nameController.text);
     Navigator.pushNamed(context, '/home');
   }
 }

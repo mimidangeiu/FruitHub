@@ -4,11 +4,21 @@ import 'package:flutter/material.dart';
 class PrimaryTextfield extends StatelessWidget {
   final String hint;
   final Widget? icon;
-  PrimaryTextfield({required this.hint, this.icon});
+  final TextEditingController? controller;
+  final ValueChanged<String>? onChanged;
+  PrimaryTextfield({
+    required this.hint,
+    this.icon,
+    this.controller,
+    this.onChanged,
+  });
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return TextField(
+      controller: controller,
+      onChanged: onChanged,
+      style: theme.textTheme.bodyMedium,
       decoration: InputDecoration(
         prefix: icon,
         filled: true,

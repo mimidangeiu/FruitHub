@@ -1,24 +1,30 @@
 import 'package:ex2/common/widget/app_container.dart';
-import 'package:ex2/common/widget/app_stack.dart';
 import 'package:ex2/common/widget/primary_button.dart';
 import 'package:ex2/core/models/cart_item.dart';
 import 'package:ex2/core/models/products.dart';
+import 'package:ex2/module/cart/cubit/cart_cubit.dart';
+import 'package:ex2/module/favourite/cubit/favourite_cubit.dart';
+import 'package:ex2/module/favourite/cubit/favourite_state.dart';
 import 'package:flutter/material.dart';
 import 'package:ex2/theme/app_colors.dart';
 import 'package:ex2/theme/app_theme.dart';
 import 'package:ex2/common/widget/app_stack.dart';
 import 'package:ex2/common/widget/goback_button.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddToBasket extends StatefulWidget {
-  final CartItem cartItem;
-  const AddToBasket({required this.cartItem});
+  final Product product;
+
+  const AddToBasket({required this.product});
 
   State<AddToBasket> createState() => _AddToBasketState();
 }
 
 class _AddToBasketState extends State<AddToBasket> {
+  int quantity = 1;
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final totalPrice = widget.product.price * quantity;
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
@@ -37,7 +43,7 @@ class _AddToBasketState extends State<AddToBasket> {
                 child: Image.asset('assets/images/add_to_basket_icon.png'),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Color(0xFFFFFFFF),
@@ -55,7 +61,7 @@ class _AddToBasketState extends State<AddToBasket> {
                           padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
                           child: Text(
                             textAlign: TextAlign.left,
-                            widget.cartItem.product.name,
+                            widget.product.name,
                             style: theme.textTheme.headlineLarge,
                           ),
                         ),
@@ -70,7 +76,7 @@ class _AddToBasketState extends State<AddToBasket> {
                                 ),
                               ),
                               SizedBox(width: 10),
-                              Text(widget.cartItem.quantity.toString()),
+                              Text(quantity.toString()),
                               SizedBox(width: 10),
                               TextButton(
                                 onPressed: onTappedIncrease,
@@ -80,7 +86,7 @@ class _AddToBasketState extends State<AddToBasket> {
                               ),
                               SizedBox(width: 70),
                               Text(
-                                "\$ ${widget.cartItem.product.price}",
+                                "\$ ${totalPrice}",
                                 style: theme.textTheme.headlineMedium,
                               ),
                             ],
@@ -96,37 +102,46 @@ class _AddToBasketState extends State<AddToBasket> {
                         Image.asset('assets/icons/addtobasket_line.png'),
                         SizedBox(height: 30),
                         Text(
-                          widget.cartItem.product.ingredients,
+                          widget.product.ingredients,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         SizedBox(height: 50),
                         Text(
-                          widget.cartItem.product.description,
+                          widget.product.description,
                           style: theme.textTheme.bodySmall,
                         ),
                         SizedBox(height: 30),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  widget.cartItem.product.isLiked =
-                                      !widget.cartItem.product.isLiked;
-                                });
+                            BlocBuilder<FavouriteCubit, FavouriteState>(
+                              builder: (context, state) {
+                                return IconButton(
+                                  onPressed: () {
+                                    context
+                                        .read<FavouriteCubit>()
+                                        .tappedHeart();
+                                  },
+                                  icon: Image.asset(
+                                    state.isLiked
+                                        ? 'assets/icons/tapped_heart.png'
+                                        : 'assets/icons/untapped_heart.png',
+                                    height: 40,
+                                    width: 40,
+                                  ),
+                                );
                               },
-                              icon: Image.asset(
-                                widget.cartItem.product.isLiked
-                                    ? 'assets/icons/tapped_heart.png'
-                                    : 'assets/icons/untapped_heart.png',
-                                height: 16,
-                                width: 16,
-                              ),
                             ),
                             PrimaryButton(
                               onPressed: () {
+                                context.read<CartCubit>().addItem(
+                                  CartItem(
+                                    product: widget.product,
+                                    quantity: quantity,
+                                  ),
+                                );
                                 Navigator.pushNamed(context, '/order');
                               },
                               width: 200,
@@ -150,13 +165,15 @@ class _AddToBasketState extends State<AddToBasket> {
 
   void onTappedIncrease() {
     setState(() {
-      widget.cartItem.quantity = widget.cartItem.quantity++;
+      quantity += 1;
     });
   }
 
   void onTappedDecrease() {
     setState(() {
-      widget.cartItem.quantity = widget.cartItem.quantity--;
+      if (quantity > 1) {
+        quantity -= 1;
+      }
     });
   }
 }
