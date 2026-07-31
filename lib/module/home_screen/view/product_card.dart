@@ -7,8 +7,6 @@ import 'package:ex2/theme/app_colors.dart' show AppColors;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../core/data/mock_products.dart' show products;
-
 class ProductCard extends StatefulWidget {
   final Product product;
   const ProductCard({super.key, required this.product});

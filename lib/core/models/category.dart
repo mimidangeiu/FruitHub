@@ -1,1 +1,5 @@
-enum Category { Recommended, Hottest, Popular, NewCombo, Top, Basket }
+class Category {
+  final String name;
+
+  Category({required this.name});
+}
