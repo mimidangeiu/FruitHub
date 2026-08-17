@@ -8,7 +8,7 @@ import 'package:ex2/module/home_screen/cubit/product/product_state.dart'
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductCubit extends Cubit<ProductState> {
-  final productService;
+  final ProductService productService;
   ProductCubit({required this.productService})
     : super(
         const ProductState(
@@ -17,8 +17,8 @@ class ProductCubit extends Cubit<ProductState> {
           recommendedProducts: [],
         ),
       );
-  void getProduct(Category? selectedCategory) {
-    final products = ProductService().getProduct();
+  void getProduct(Category? selectedCategory) async {
+    final products = await productService.getProduct();
     final filteredProducts = selectedCategory == null
         ? <Product>[]
         : getProductByCategory(products, selectedCategory);

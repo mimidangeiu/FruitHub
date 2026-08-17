@@ -1,5 +1,6 @@
 import 'package:ex2/core/models/products.dart';
 import 'package:ex2/core/service/product_service.dart';
+import 'package:ex2/injection.dart';
 import 'package:ex2/module/add_to_basket/add_to_basket.dart';
 import 'package:ex2/module/authentication/authentication.dart';
 import 'package:ex2/module/cart/cubit/cart_cubit.dart' show CartCubit;
@@ -25,6 +26,7 @@ import 'module/home_screen/view/home_screen.dart';
 final themeNotifier = ValueNotifier<ThemeMode>(ThemeMode.system);
 
 void main() {
+  setupDependencies();
   runApp(
     MultiBlocProvider(
       providers: [
@@ -33,7 +35,7 @@ void main() {
         BlocProvider(create: (_) => SearchCubit()),
         BlocProvider(create: (_) => CategoryCubit()),
         BlocProvider(
-          create: (_) => ProductCubit(productService: ProductService),
+          create: (_) => ProductCubit(productService: getIt<ProductService>()),
         ),
       ],
       child: const MainApp(),
