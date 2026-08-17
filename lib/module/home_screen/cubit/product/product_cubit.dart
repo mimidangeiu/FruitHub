@@ -15,8 +15,38 @@ class ProductCubit extends Cubit<ProductState> {
           products: [],
           allProducts: [],
           recommendedProducts: [],
+          isLoading: false,
+          errorMessage: null,
         ),
       );
+
+  Future<void> loadProducts() async {
+    emit(state.copyWith(isLoading: true, errorMessage: null));
+    try {
+      final products = await productService.getProduct();
+      final recommended = getProductByCategory(
+        products,
+        Category(name: 'Recommended'),
+      );
+      emit(
+        state.copyWith(
+          allProducts: products,
+          products: products, // or filter by selected category later
+          recommendedProducts: recommended,
+          isLoading: false,
+          errorMessage: null,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: 'Không thể tải sản phẩm: $e',
+        ),
+      );
+    }
+  }
+
   void getProduct(Category? selectedCategory) async {
     final products = await productService.getProduct();
     final filteredProducts = selectedCategory == null

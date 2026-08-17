@@ -4,6 +4,8 @@ import 'package:ex2/common/widget/primary_textfield.dart';
 import 'package:ex2/core/models/products.dart';
 import 'package:ex2/core/models/category.dart';
 import 'package:ex2/module/add_to_basket/add_to_basket.dart';
+import 'package:ex2/module/authentication/cubit/auth_cubit.dart';
+import 'package:ex2/module/authentication/cubit/auth_state.dart';
 import 'package:ex2/module/home_screen/cubit/category/category_cubit.dart';
 import 'package:ex2/module/home_screen/cubit/category/category_state.dart';
 import 'package:ex2/module/favourite/cubit/favourite_cubit.dart';
@@ -14,12 +16,25 @@ import 'package:ex2/module/home_screen/cubit/search/search_state.dart';
 import 'package:ex2/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ex2/module/user/cubit/usercubit.dart';
-import 'package:ex2/module/user/cubit/userstate.dart';
 
 import '../cubit/product/product_state.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    final selectedCategory = context.read<CategoryCubit>().getCategories();
+    // call loadProducts once on enter
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProductCubit>().loadProducts();
+    });
+  }
+
   Widget build(BuildContext context) {
     final selectedCategory = context.read<CategoryCubit>().getCategories();
     context.read<ProductCubit>().getProduct(selectedCategory);
@@ -62,10 +77,10 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 20),
-                BlocBuilder<UserCubit, UserState>(
+                BlocBuilder<AuthCubit, AuthState>(
                   builder: (context, state) {
                     return Text(
-                      "Hello ${state.name}, What fruit salad\ncombo do you want today?",
+                      "Hello ${(state as AuthAuthenticated).firstName}, What fruit salad\ncombo do you want today?",
                       style: theme.textTheme.bodyLarge,
                     );
                   },
@@ -101,6 +116,38 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(height: 30),
                 BlocBuilder<ProductCubit, ProductState>(
                   builder: (context, state) {
+                    if (state.isLoading) {
+                      return const SizedBox(
+                        height: 250,
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+
+                    if (state.errorMessage != null) {
+                      return SizedBox(
+                        height: 250,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.wifi_off, size: 48),
+                              const SizedBox(height: 12),
+                              Text(
+                                state.errorMessage!,
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 12),
+                              ElevatedButton(
+                                onPressed: () =>
+                                    context.read<ProductCubit>().loadProducts(),
+                                child: const Text('Thử lại'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
                     final searchKeyword = keyword.trim().toLowerCase();
 
                     final recommendedProducts = searchKeyword.isEmpty

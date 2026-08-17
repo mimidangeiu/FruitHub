@@ -55,7 +55,7 @@ class ProductService {
       return [];
     } catch (err) {
       print('getProduct error: $err');
-      return [];
+      rethrow;
     }
   }
 }

@@ -34,7 +34,7 @@ class _ProductCardState extends State<ProductCard> {
                 fit: BoxFit.contain,
               ),
             ),
-            SizedBox(width: 20),
+            SizedBox(width: 10),
             Column(
               children: [
                 Text(
